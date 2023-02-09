@@ -1,23 +1,33 @@
 <script setup lang="ts">
+import {ref} from 'vue';
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import BasicControl from './components/BasicControl.vue'
+import ListBooks from "@/components/ListBooks.vue";
+import listAuthors from "@/components/ListAuthors.vue";
+
+const currentComponent = ref(ListBooks);
+const compoName = ref('книги');
+
+function selectComponent(newName: string) {
+  if (newName === 'авторы') {
+    currentComponent.value = listAuthors;
+  } else if(newName === 'книги') {
+    currentComponent.value = ListBooks;
+  } else {
+    console.log('wrong component');
+  }
+  console.log(compoName);
+}
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="main">
+    <BasicControl msg="OTUS сайт библиотеки openlibrary" />
+    <button @click="selectComponent('книги')">Книги</button> <button @click="selectComponent('авторы')">Авторы</button>
+    <component :is="currentComponent"></component>
+  </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="OTUS sample page" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
 </template>
 
 <style scoped>
@@ -26,6 +36,13 @@ header {
   max-height: 100vh;
 }
 
+.wrapper {
+  display: flex;
+  place-items: flex-start;
+  flex-wrap: wrap;
+}
+.content {
+}
 .logo {
   display: block;
   margin: 0 auto 2rem;
@@ -67,7 +84,7 @@ nav a:first-of-type {
     margin: 0 2rem 0 0;
   }
 
-  header .wrapper {
+  .wrapper {
     display: flex;
     place-items: flex-start;
     flex-wrap: wrap;
