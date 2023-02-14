@@ -80,7 +80,7 @@ export function loadBooksList(newSearch?: any) {
       },
     })
     .then((response) => {
-      // console.log(response);
+      console.log(response);
       const data = response.data;
       booksFound.value = data.numFound;
       books.value = [];
@@ -100,7 +100,7 @@ export function loadBooksList(newSearch?: any) {
     })
     .catch((error) => {
       searchStatus.value = error.response;
-      console.log(error);
+      console.log('error', error);
     })
     .then(() => {
       inProgress.value = false;

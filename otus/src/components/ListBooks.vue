@@ -1,5 +1,5 @@
 <template>
-  <div class="book-add">
+  <div class="author-add">
     <div class="title input-item">
       <span class="small-title">Название: </span><input v-model="bookTitle" />
     </div>
@@ -61,6 +61,7 @@
       {{ getBooksOffset() + bookItemsPerPage }} из {{ totalBooks }}
     </div>
     <div v-if="totalBooks === 0 && !booksLoading">Книг не найдено</div>
+    <div v-if="searchResult !== ''">Ошибка при поиске книг</div>
     <ul>
       <li v-for="item in books" :key="item.key">
         <BookItem>
@@ -88,6 +89,7 @@ import {
   deleteBook,
   getBooksOffset,
   loadBooksList,
+  searchResult,
   setBooksOffset,
   totalBooks,
 } from "@/library/books";
@@ -102,7 +104,7 @@ const searchString = ref("");
 
 function canGoBack() {
   let result = getBooksOffset() > 0 && !booksLoading;
-  console.log('canGoBack:', result);
+  console.log("canGoBack:", result);
   return result;
 }
 
@@ -139,7 +141,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.book-add {
+.author-add {
   padding-bottom: 1em;
 }
 
