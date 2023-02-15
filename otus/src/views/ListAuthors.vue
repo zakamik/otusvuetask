@@ -59,11 +59,11 @@
 
     <ul>
       <li v-for="item in authors" :key="item.key">
-        <AuthorItem>
-          <template #name>{{ item.name }}</template>
-          <template #birthDate>{{ item.birthDate }}</template>
-          <template #workCount>{{ item.workCount }}</template>
-        </AuthorItem>
+        <AuthorItem
+          :name="item.name"
+          :birth-date="item.birthDate"
+          :work-count="item.workCount"
+        />
         <button class="deleteAuthor" @click="deleteAuthor(item.key)">
           Удалить
         </button>
@@ -87,7 +87,7 @@ import {
   setAuthorsOffset,
   totalAuthors,
 } from "@/library/authors";
-import AuthorItem from "./AuthorItem.vue";
+import AuthorItem from "../components/AuthorItem.vue";
 
 const searchString = ref("");
 
@@ -124,7 +124,7 @@ const birthDate = ref("");
 const workCount = ref("");
 
 onMounted(() => {
-  // loadBooksList(false);
+  loadAuthorsList("");
 });
 </script>
 

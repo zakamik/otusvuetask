@@ -64,11 +64,11 @@
     <div v-if="searchResult !== ''">Ошибка при поиске книг</div>
     <ul>
       <li v-for="item in books" :key="item.key">
-        <BookItem>
-          <template #title>{{ item.title }}</template>
-          <template #author>{{ item.author }}</template>
-          <template #subject>{{ item.subject }}</template>
-        </BookItem>
+        <BookItem
+          :book-title="item.title"
+          :book-author="item.author"
+          :book-subject="item.subject"
+        />
         <button class="deleteBook" @click="deleteBook(item.key)">
           Удалить
         </button>
@@ -94,7 +94,7 @@ import {
   totalBooks,
 } from "@/library/books";
 
-import BookItem from "./BookItem.vue";
+import BookItem from "../components/BookItem.vue";
 
 const bookTitle = ref("");
 const author = ref("");

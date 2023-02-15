@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import ListAuthors from "../ListAuthors.vue";
+import ListAuthors from "../../views/ListAuthors.vue";
 
 describe("test list of authors", () => {
   let wrapper: any;

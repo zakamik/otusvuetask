@@ -1,33 +1,32 @@
 <script setup lang="ts">
-import {ref} from 'vue';
-import { RouterLink, RouterView } from 'vue-router'
-import BasicControl from './components/BasicControl.vue'
-import ListBooks from "@/components/ListBooks.vue";
-import listAuthors from "@/components/ListAuthors.vue";
+import { ref } from "vue";
+import { RouterLink, RouterView } from "vue-router";
+import BasicControl from "./components/BasicControl.vue";
+import ListBooks from "@/views/ListBooks.vue";
+import listAuthors from "@/views/ListAuthors.vue";
 
 const currentComponent = ref(ListBooks);
-const compoName = ref('книги');
+const compoName = ref("книги");
 
 function selectComponent(newName: string) {
-  if (newName === 'авторы') {
+  if (newName === "авторы") {
     currentComponent.value = listAuthors;
-  } else if(newName === 'книги') {
+  } else if (newName === "книги") {
     currentComponent.value = ListBooks;
   } else {
-    console.log('wrong component');
+    console.log("wrong component");
   }
   console.log(compoName);
 }
-
 </script>
 
 <template>
   <div class="main">
     <BasicControl msg="OTUS сайт библиотеки openlibrary" />
-    <button @click="selectComponent('книги')">Книги</button> <button @click="selectComponent('авторы')">Авторы</button>
+    <button @click="selectComponent('книги')">Книги</button>
+    <button @click="selectComponent('авторы')">Авторы</button>
     <component :is="currentComponent"></component>
   </div>
-
 </template>
 
 <style scoped>

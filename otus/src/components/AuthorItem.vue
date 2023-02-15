@@ -1,21 +1,25 @@
 <template>
   <div class="item">
-    <i>
-      <slot name="icon"></slot>
-    </i>
     <div class="details">
       <h3>
-        <slot name="name"></slot>
+        {{ name }}
       </h3>
-      <p class="author"><span class="small-title">Дата рождения:</span> <slot name="birthDate">n/a</slot></p>
-      <p class="workCount"><span class="small-title">Количество книг:</span> <slot name="workCount">n/a</slot></p>
+      <p class="author">
+        <span class="small-title">Дата рождения:</span> {{ birthDate }}
+      </p>
+      <p class="workCount">
+        <span class="small-title">Количество книг:</span> {{ workCount }}
+      </p>
     </div>
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
-
+<script setup lang="ts">
+defineProps<{
+  name: string;
+  birthDate: string;
+  workCount?: number;
+}>();
 </script>
 
 <style scoped>
