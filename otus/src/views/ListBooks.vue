@@ -1,85 +1,91 @@
 <template>
-  <div class="author-add">
-    <div class="title input-item">
-      <span class="small-title">Название: </span><input v-model="bookTitle" />
-    </div>
-    <div class="author input-item">
-      <span class="small-title">Автор: </span>
-      <input v-model="author" />
-    </div>
-    <div class="bookSubject input-item">
-      <span class="small-title">Описание: </span>
-      <input v-model="bookSubject" />
-    </div>
-    <div class="input-item">
-      <button @click="addBook(bookTitle, author, bookSubject)">
-        Добавить книгу
-      </button>
-    </div>
-  </div>
-  <div class="booksList">
-    <input v-model="searchString" :disabled="booksLoading" type="text" />
-    <button :disabled="booksLoading" @click="loadBooksList(searchString)">
-      Искать
-    </button>
-    <nav>
-      <button
-        :disabled="booksLoading || !canGoBack()"
-        class="button"
-        @click="previousPage()"
-      >
-        Назад
-      </button>
-      <button
-        :disabled="booksLoading || !canGoForward()"
-        class="button"
-        @click="nextPage()"
-      >
-        Вперёд
-      </button>
-      <span v-show="booksLoading">
-        <svg
-          height="1em"
-          viewBox="0 0 24 24"
-          width="1em"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g class="spinner_Wezc">
-            <circle cx="12" cy="2.5" opacity=".14" r="1.5" />
-            <circle cx="16.75" cy="3.77" opacity=".29" r="1.5" />
-            <circle cx="20.23" cy="7.25" opacity=".43" r="1.5" />
-            <circle cx="21.50" cy="12.00" opacity=".57" r="1.5" />
-            <circle cx="20.23" cy="16.75" opacity=".71" r="1.5" />
-            <circle cx="16.75" cy="20.23" opacity=".86" r="1.5" />
-            <circle cx="12" cy="21.5" r="1.5" />
-          </g>
-        </svg>
-      </span>
-    </nav>
-    <div>
-      Книги с {{ getBooksOffset() + 1 }} по
-      {{ getBooksOffset() + bookItemsPerPage }} из {{ totalBooks }}
-    </div>
-    <div v-if="totalBooks === 0 && !booksLoading">Книг не найдено</div>
-    <div v-if="searchResult !== ''">Ошибка при поиске книг</div>
-    <ul>
-      <li v-for="item in books" :key="item.key">
-        <BookItem
-          :book-title="item.title"
-          :book-author="item.author"
-          :book-subject="item.subject"
-        />
-        <button class="deleteBook" @click="deleteBook(item.key)">
-          Удалить
-        </button>
-        <hr />
-      </li>
-    </ul>
-  </div>
+  <PageTemplate>
+    <template #header>Книги</template>
+    <template #main>
+      <div class="row">
+        <div class="col col-sm-3 book-add" v-if="curRouteName === 'addBook'">
+          <div class="title input-item">
+            <span class="small-title">Название: </span
+            ><input v-model="bookTitle" />
+          </div>
+          <div class="author input-item">
+            <span class="small-title">Автор: </span>
+            <input v-model="author" />
+          </div>
+          <div class="bookSubject input-item">
+            <span class="small-title">Описание: </span>
+            <input v-model="bookSubject" />
+          </div>
+          <div class="input-item">
+            <button @click="addNewBook()">Добавить книгу</button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="booksList">
+          <input v-model="searchString" :disabled="booksLoading" type="text" />
+          <button :disabled="booksLoading" @click="loadBooksList(searchString)">
+            Искать
+          </button>
+          <button
+            :disabled="booksLoading || !canGoBack()"
+            class="button"
+            @click="previousPage()"
+          >
+            Назад
+          </button>
+          <button
+            :disabled="booksLoading || !canGoForward()"
+            class="button"
+            @click="nextPage()"
+          >
+            Вперёд
+          </button>
+          <span v-show="booksLoading">
+            <svg
+              height="1em"
+              viewBox="0 0 24 24"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g class="spinner_Wezc">
+                <circle cx="12" cy="2.5" opacity=".14" r="1.5" />
+                <circle cx="16.75" cy="3.77" opacity=".29" r="1.5" />
+                <circle cx="20.23" cy="7.25" opacity=".43" r="1.5" />
+                <circle cx="21.50" cy="12.00" opacity=".57" r="1.5" />
+                <circle cx="20.23" cy="16.75" opacity=".71" r="1.5" />
+                <circle cx="16.75" cy="20.23" opacity=".86" r="1.5" />
+                <circle cx="12" cy="21.5" r="1.5" />
+              </g>
+            </svg>
+          </span>
+          <div>
+            Книги с {{ getBooksOffset() + 1 }} по
+            {{ getBooksOffset() + bookItemsPerPage }} из {{ totalBooks }}
+          </div>
+          <div v-if="totalBooks === 0 && !booksLoading">Книг не найдено</div>
+          <div v-if="searchResult !== ''">Ошибка при поиске книг</div>
+          <ul>
+            <li v-for="item in books" :key="item.key">
+              <BookItem
+                :book-title="item.title"
+                :book-author="item.author"
+                :book-subject="item.subject"
+              />
+              <button class="deleteBook" @click="deleteBook(item.key)">
+                Удалить
+              </button>
+              <hr />
+            </li>
+          </ul>
+        </div>
+      </div>
+    </template>
+  </PageTemplate>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import {
   addBook,
@@ -95,7 +101,8 @@ import {
 } from "@/library/books";
 
 import BookItem from "../components/BookItem.vue";
-
+import PageTemplate from "@/views/PageTemplate.vue";
+import { useRoute, useRouter } from "vue-router";
 const bookTitle = ref("");
 const author = ref("");
 const bookSubject = ref("");
@@ -135,13 +142,23 @@ function nextPage() {
   loadBooksList(false);
 }
 
+const router = useRouter();
+function addNewBook() {
+  addBook(bookTitle, author, bookSubject);
+  router.push({ name: "books" });
+}
+
 onMounted(() => {
-  loadBooksList("");
+  if (books.value.length === 0) {
+    loadBooksList("");
+  }
 });
+
+const curRouteName = computed(() => useRoute().name);
 </script>
 
 <style scoped>
-.author-add {
+.book-add {
   padding-bottom: 1em;
 }
 

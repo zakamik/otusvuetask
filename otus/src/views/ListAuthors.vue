@@ -1,80 +1,99 @@
 <template>
-  <div class="author-add">
-    <div class="title input-item">
-      <span class="small-title">Имя: </span><input v-model="authorName" />
-    </div>
-    <div class="author input-item">
-      <span class="small-title">Дата рождения: </span>
-      <input v-model="birthDate" />
-    </div>
-    <div class="bookSubject input-item">
-      <span class="small-title">Количество книг: </span>
-      <input v-model="workCount" />
-    </div>
-    <div class="input-item">
-      <button @click="addAuthor(authorName, birthDate, workCount)">
-        Добавить автора
-      </button>
-    </div>
-  </div>
-  <div class="booksList">
-    <input v-model="searchString" :disabled="authorsLoading" type="text" />
-    <button :disabled="authorsLoading" @click="loadAuthorsList(searchString)">
-      Искать
-    </button>
-    <nav>
-      <button :disabled="!canGoBack()" class="button" @click="previousPage()">
-        Назад
-      </button>
-      <button :disabled="!canGoForward()" class="button" @click="nextPage()">
-        Вперёд
-      </button>
-      <span v-show="authorsLoading">
-        <svg
-          height="1em"
-          viewBox="0 0 24 24"
-          width="1em"
-          xmlns="http://www.w3.org/2000/svg"
+  <PageTemplate>
+    <template #header>Авторы</template>
+    <template #main>
+      <div class="row">
+        <div class="author-add" v-if="curRouteName === 'addAuthor'">
+          <div class="title input-item">
+            <span class="small-title">Имя: </span><input v-model="authorName" />
+          </div>
+          <div class="author input-item">
+            <span class="small-title">Дата рождения: </span>
+            <input v-model="birthDate" />
+          </div>
+          <div class="bookSubject input-item">
+            <span class="small-title">Количество книг: </span>
+            <input v-model="workCount" />
+          </div>
+          <div class="input-item">
+            <button @click="addNewAuthor()">Добавить автора</button>
+          </div>
+        </div>
+      </div>
+      <div class="booksList">
+        <input v-model="searchString" :disabled="authorsLoading" type="text" />
+        <button
+          :disabled="authorsLoading"
+          @click="loadAuthorsList(searchString)"
         >
-          <g class="spinner_Wezc">
-            <circle cx="12" cy="2.5" opacity=".14" r="1.5" />
-            <circle cx="16.75" cy="3.77" opacity=".29" r="1.5" />
-            <circle cx="20.23" cy="7.25" opacity=".43" r="1.5" />
-            <circle cx="21.50" cy="12.00" opacity=".57" r="1.5" />
-            <circle cx="20.23" cy="16.75" opacity=".71" r="1.5" />
-            <circle cx="16.75" cy="20.23" opacity=".86" r="1.5" />
-            <circle cx="12" cy="21.5" r="1.5" />
-          </g>
-        </svg>
-      </span>
-    </nav>
-    <div>
-      Авторы с {{ getAuthorsOffset() + 1 }} по
-      {{ getAuthorsOffset() + authorItemsPerPage }} из {{ totalAuthors }}
-    </div>
-    <div v-if="totalAuthors === 0 && !authorsLoading">Авторов не найдено</div>
-    <div v-if="searchResult !== ''">
-      Ошибка при поиске авторов: {{ searchResult }}
-    </div>
-
-    <ul>
-      <li v-for="item in authors" :key="item.key">
-        <AuthorItem
-          :name="item.name"
-          :birth-date="item.birthDate"
-          :work-count="item.workCount"
-        />
-        <button class="deleteAuthor" @click="deleteAuthor(item.key)">
-          Удалить
+          Искать
         </button>
-        <hr />
-      </li>
-    </ul>
-  </div>
+        <nav>
+          <button
+            :disabled="!canGoBack()"
+            class="button"
+            @click="previousPage()"
+          >
+            Назад
+          </button>
+          <button
+            :disabled="!canGoForward()"
+            class="button"
+            @click="nextPage()"
+          >
+            Вперёд
+          </button>
+          <span v-show="authorsLoading">
+            <svg
+              height="1em"
+              viewBox="0 0 24 24"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g class="spinner_Wezc">
+                <circle cx="12" cy="2.5" opacity=".14" r="1.5" />
+                <circle cx="16.75" cy="3.77" opacity=".29" r="1.5" />
+                <circle cx="20.23" cy="7.25" opacity=".43" r="1.5" />
+                <circle cx="21.50" cy="12.00" opacity=".57" r="1.5" />
+                <circle cx="20.23" cy="16.75" opacity=".71" r="1.5" />
+                <circle cx="16.75" cy="20.23" opacity=".86" r="1.5" />
+                <circle cx="12" cy="21.5" r="1.5" />
+              </g>
+            </svg>
+          </span>
+        </nav>
+        <div>
+          Авторы с {{ getAuthorsOffset() + 1 }} по
+          {{ getAuthorsOffset() + authorItemsPerPage }} из {{ totalAuthors }}
+        </div>
+        <div v-if="totalAuthors === 0 && !authorsLoading">
+          Авторов не найдено
+        </div>
+        <div v-if="searchResult !== ''">
+          Ошибка при поиске авторов: {{ searchResult }}
+        </div>
+
+        <ul>
+          <li v-for="item in authors" :key="item.key">
+            <AuthorItem
+              :name="item.name"
+              :birth-date="item.birthDate"
+              :work-count="item.workCount"
+            />
+            <button class="deleteAuthor" @click="deleteAuthor(item.key)">
+              Удалить
+            </button>
+            <hr />
+          </li>
+        </ul>
+      </div>
+    </template>
+  </PageTemplate>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import PageTemplate from "@/views/PageTemplate.vue";
+import { computed, onMounted, ref } from "vue";
 import {
   addAuthor,
   authorItemsPerPage,
@@ -88,6 +107,7 @@ import {
   totalAuthors,
 } from "@/library/authors";
 import AuthorItem from "../components/AuthorItem.vue";
+import { useRoute, useRouter } from "vue-router";
 
 const searchString = ref("");
 
@@ -122,6 +142,14 @@ function nextPage() {
 const authorName = ref("");
 const birthDate = ref("");
 const workCount = ref("");
+
+const curRouteName = computed(() => useRoute().name);
+const router = useRouter();
+
+function addNewAuthor() {
+  addAuthor(authorName.value, birthDate.value, parseInt(workCount.value));
+  router.push({ name: "authors" });
+}
 
 onMounted(() => {
   loadAuthorsList("");
