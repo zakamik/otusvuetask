@@ -1,101 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { RouterLink, RouterView } from "vue-router";
-import BasicControl from "./components/BasicControl.vue";
-import ListBooks from "@/views/ListBooks.vue";
-import listAuthors from "@/views/ListAuthors.vue";
-
-const currentComponent = ref(ListBooks);
-const compoName = ref("книги");
-
-function selectComponent(newName: string) {
-  if (newName === "авторы") {
-    currentComponent.value = listAuthors;
-  } else if (newName === "книги") {
-    currentComponent.value = ListBooks;
-  } else {
-    console.log("wrong component");
-  }
-  console.log(compoName);
-}
+import { RouterView } from "vue-router";
+import Navigate from "@/views/NavigateLibrary.vue";
 </script>
 
 <template>
-  <div class="main">
-    <BasicControl msg="OTUS сайт библиотеки openlibrary" />
-    <button @click="selectComponent('книги')">Книги</button>
-    <button @click="selectComponent('авторы')">Авторы</button>
-    <component :is="currentComponent"></component>
-  </div>
+  <Navigate></Navigate>
+  <router-view></router-view>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.wrapper {
-  display: flex;
-  place-items: flex-start;
-  flex-wrap: wrap;
-}
-.content {
-}
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
+<style scoped></style>
